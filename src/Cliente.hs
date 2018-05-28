@@ -94,3 +94,20 @@ rescatarse :: TipoCliente -> Int -> TipoCliente
 rescatarse (Cliente nombre resistencia amigos bebidas_tomadas) horas
   | horas > 3 = Cliente nombre (resistencia+200) amigos bebidas_tomadas
   | otherwise = Cliente nombre (resistencia+100) amigos bebidas_tomadas
+
+
+{---------------------
+----Segunda parte-----
+----------------------}
+
+{- Objetivo 1 -}
+
+tomarTrago cliente trago =
+    trago cliente
+
+tomarTragos [] cliente = cliente
+tomarTragos (unTrago:otrosTragos) cliente = 
+    tomarTragos otrosTragos (unTrago cliente)
+    
+dameOtro (Cliente nombre resistencia amigos bebidas_tomadas) =
+    (Cliente nombre resistencia amigos ((head bebidas_tomadas):bebidas_tomadas))
