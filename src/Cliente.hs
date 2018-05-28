@@ -1,9 +1,9 @@
 module Cliente 
     (TipoCliente (..),
-    como_esta,
+    comoEsta,
     rescatarse,
-    es_amigo,
-    agregar_amigo,
+    esAmigo,
+    agregarAmigo,
     amigarse,
     )
     where
@@ -26,23 +26,23 @@ instance Eq TipoCliente where
         where lowercase cadena = [toLower c | c <- cadena]
     c1 /= c2 = not(c1 == c2)
 
-es_amigo :: TipoCliente -> TipoCliente -> Bool
-es_amigo cliente amigo = elem amigo (amigos cliente)
+esAmigo :: TipoCliente -> TipoCliente -> Bool
+esAmigo cliente amigo = elem amigo (amigos cliente)
 
-agregar_amigo :: TipoCliente -> TipoCliente -> TipoCliente
-agregar_amigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (nuevo_amigo:amigos)
+agregarAmigo :: TipoCliente -> TipoCliente -> TipoCliente
+agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (nuevo_amigo:amigos)
 --Otra forma de agregar el amigo es concatenando listas (hacer una lista con el nuevo_amigo)
---agregar_amigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (amigos++[nuevo_amigo])
+--agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (amigos++[nuevo_amigo])
 
 amigarse :: TipoCliente -> TipoCliente -> TipoCliente
 amigarse cliente amigo
-  | cliente /= amigo && not(es_amigo cliente amigo) = agregar_amigo cliente amigo 
+  | cliente /= amigo && not(esAmigo cliente amigo) = agregarAmigo cliente amigo 
   | otherwise = cliente
 
 {- Objetivo 3 -}
 
-como_esta :: TipoCliente -> String
-como_esta cliente 
+comoEsta :: TipoCliente -> String
+comoEsta cliente 
   | resistencia cliente > 50 = "fresco"
   | length (amigos cliente) >= 1 = "piola"
   | otherwise = "duro"
