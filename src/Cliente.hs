@@ -1,15 +1,16 @@
 module Cliente 
     (TipoCliente (..),
+    TipoBebida (..),
     comoEsta,
     rescatarse,
     esAmigo,
     agregarAmigo,
     amigarse,
-    grogXD,
-    jarraLoca,
-    klusener,
-    tintico,
-    soda
+    tomarTrago,
+    tomarTragos,
+    dameOtro,
+    cualesPuedeTomar,
+    cuantasPuedeTomar,
     )
     where
 
@@ -19,9 +20,10 @@ import Data.Char
 
 data TipoCliente = 
     Cliente {
-    nombre      :: String,
-    resistencia :: Int,
-    amigos      :: [TipoCliente]}
+    nombre          :: String,
+    resistencia     :: Int,
+    amigos          :: [TipoCliente],
+    bebidas_tomadas :: [TipoBebida]}
     deriving (Show)
 
 {-Un cliente se sabe comparar-}
@@ -31,11 +33,13 @@ instance Eq TipoCliente where
         where lowercase cadena = [toLower c | c <- cadena]
     c1 /= c2 = not(c1 == c2)
 
+
+
 esAmigo :: TipoCliente -> TipoCliente -> Bool
 esAmigo cliente amigo = elem amigo (amigos cliente)
 
 agregarAmigo :: TipoCliente -> TipoCliente -> TipoCliente
-agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (nuevo_amigo:amigos)
+agregarAmigo (Cliente nombre resistencia amigos bebidas_tomadas) nuevo_amigo = Cliente nombre resistencia (nuevo_amigo:amigos) bebidas_tomadas
 --Otra forma de agregar el amigo es concatenando listas (hacer una lista con el nuevo_amigo)
 --agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (amigos++[nuevo_amigo])
 
@@ -54,39 +58,86 @@ comoEsta cliente
 
 {- Objetivo 5 -}
 
-{---------------------------
------Bebidassssssssssss-----
-----------------------------}
+data TipoBebida = 
+        GrogXD 
+      | JarraLoca
+      | Klusener    {sabor :: String}
+      | Tintico
+      | Soda        {fuerza :: Int}
 
-grogXD:: TipoCliente -> TipoCliente
-grogXD (Cliente nombre resistencia amigos) = (Cliente nombre 0 amigos)
+instance Show TipoBebida where
+    show GrogXD = "GrogXD"
+    show JarraLoca = "Jarra Loca"
+    show (Klusener sabor) = ("Klusener de " ++ sabor)
+    show Tintico = "Tintico"
+    show (Soda fuerza) = ("Soda de fuerza " ++ show(fuerza))
 
-disminuirResistencia :: Int -> TipoCliente -> TipoCliente
-disminuirResistencia cantidad (Cliente nombre resistencia amigos) 
-    | resistencia > 10 = (Cliente nombre (resistencia-10) amigos)
-    | otherwise = (Cliente nombre 0 amigos)
-    
-jarraLoca :: TipoCliente -> TipoCliente
-jarraLoca (Cliente nombre resistencia amigos) = 
-        disminuirResistencia 10 (Cliente nombre resistencia (map (disminuirResistencia 10) amigos))
-
-klusener :: String -> TipoCliente -> TipoCliente
-klusener nombreBebida (Cliente nombre resistencia amigos) = 
-                disminuirResistencia (length nombreBebida) (Cliente nombre resistencia amigos)
-                {-(Cliente nombre (disminuirResistencia (length nombreBebida) resistencia) amigos)-}
-
-tintico :: TipoCliente -> TipoCliente
-tintico (Cliente nombre resistencia amigos) = 
-                (Cliente nombre (resistencia + (5 * (length amigos))) amigos)
-
-soda :: Int -> TipoCliente -> TipoCliente
-soda fuerza (Cliente nombre resistencia amigos) = 
-                (Cliente (erpear fuerza nombre) resistencia amigos)
-                where erpear fuerza nombre = "e" ++ (replicate fuerza 'r') ++ "p" ++ nombre
 
 {- Objetivo 6 -}
 
 rescatarse :: TipoCliente -> Int -> TipoCliente
-rescatarse (Cliente nombre resistencia amigos) horas
-  | horas > 3 = Cliente nombre (resistencia+200) amigos
-  | otherwise = Cliente nombre (resistencia+100) amigos
+rescatarse (Cliente nombre resistencia amigos bebidas_tomadas) horas
+  | horas > 3 = Cliente nombre (resistencia+200) amigos bebidas_tomadas
+  | otherwise = Cliente nombre (resistencia+100) amigos bebidas_tomadas
+
+
+{---------------------
+----Segunda parte-----
+----------------------}
+
+{- Objetivo 1 -}
+
+
+disminuirResistencia :: Int -> TipoCliente -> TipoCliente
+disminuirResistencia cantidad (Cliente nombre resistencia amigos bebidas_tomadas) 
+  | resistencia > cantidad = (Cliente nombre (resistencia-cantidad) amigos bebidas_tomadas)
+  | otherwise = (Cliente nombre 0 amigos bebidas_tomadas)
+
+
+tomarTrago :: TipoBebida -> TipoCliente -> TipoCliente
+tomarTrago 
+    GrogXD 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        (Cliente nombre 0 amigos (GrogXD:bebidas_tomadas))
+tomarTrago 
+    JarraLoca 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        disminuirResistencia 10 
+            (Cliente nombre resistencia (map (disminuirResistencia 10) amigos) (JarraLoca:bebidas_tomadas))
+tomarTrago 
+    (Klusener nombreBebida) 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        disminuirResistencia (length nombreBebida) 
+            (Cliente nombre resistencia amigos ((Klusener nombreBebida):bebidas_tomadas))
+tomarTrago 
+    Tintico 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        (Cliente nombre (resistencia + (5 * (length amigos))) amigos (Tintico:bebidas_tomadas))
+tomarTrago 
+    (Soda fuerza) 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        (Cliente (erpear fuerza nombre) resistencia amigos ((Soda fuerza):bebidas_tomadas))
+                where erpear fuerza nombre = "e" ++ (replicate fuerza 'r') ++ "p" ++ nombre
+
+
+tomarTragos :: TipoCliente -> [TipoBebida] -> TipoCliente
+tomarTragos cliente listaTragos =
+    foldr tomarTrago cliente listaTragos
+    
+dameOtro :: TipoCliente -> TipoCliente
+dameOtro (Cliente nombre resistencia amigos []) =
+    (Cliente nombre resistencia amigos [])
+dameOtro cliente =
+    tomarTrago (head (bebidas_tomadas cliente)) cliente 
+
+
+{- Objetivo 2 -}
+
+cualesPuedeTomar :: TipoCliente -> [TipoBebida] -> [TipoBebida]
+cualesPuedeTomar cliente listaTragos =
+    filter (puedoTomar cliente) listaTragos
+        where puedoTomar cliente trago = resistencia (tomarTrago trago cliente) > 0
+
+cuantasPuedeTomar :: TipoCliente -> [TipoBebida] -> Int
+cuantasPuedeTomar cliente listaTragos = 
+    length (cualesPuedeTomar cliente listaTragos)
