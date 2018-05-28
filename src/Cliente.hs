@@ -46,6 +46,35 @@ como_esta cliente
   | length (amigos cliente) >= 1 = "piola"
   | otherwise = "duro"
 
+{- Objetivo 5 -}
+
+grogXD:: TipoCliente -> TipoCliente
+grogXD (Cliente nombre resistencia amigos) = (Cliente nombre 0 amigos)
+
+disminuirResistencia :: Int -> TipoCliente -> TipoCliente
+disminuirResistencia cantidad (Cliente nombre resistencia amigos) 
+    | resistencia > 10 = (Cliente nombre (resistencia-10) amigos)
+    | otherwise = (Cliente nombre 0 amigos)
+    
+jarraLoca :: TipoCliente -> TipoCliente
+jarraLoca (Cliente nombre resistencia amigos) = 
+        disminuirResistencia 10 (Cliente nombre resistencia (map (disminuirResistencia 10) amigos))
+
+klusener :: String -> TipoCliente -> TipoCliente
+klusener nombreBebida (Cliente nombre resistencia amigos) = 
+                (Cliente nombre (disminuirResistencia (length nombreBebida) resistencia) amigos)
+
+tintico :: TipoCliente -> TipoCliente
+tintico (Cliente nombre resistencia amigos) = 
+                (Cliente nombre (resistencia + (5 * (length amigos))) amigos)
+
+soda :: Int -> TipoCliente -> TipoCliente
+soda Fuerza (Cliente nombre resistencia amigos) = 
+                (Cliente (erpear fuerza nombre) resistencia amigos)
+                where erpear fuerza nombre = "e" ++ (repeat fuerza 'r') ++ p ++ nombre
+
+{- Objetivo 6 -}
+
 rescatarse :: TipoCliente -> Int -> TipoCliente
 rescatarse (Cliente nombre resistencia amigos) horas
   | horas > 3 = Cliente nombre (resistencia+200) amigos
