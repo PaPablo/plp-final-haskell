@@ -5,6 +5,11 @@ module Cliente
     esAmigo,
     agregarAmigo,
     amigarse,
+    grogXD,
+    jarraLoca,
+    klusener,
+    tintico,
+    soda
     )
     where
 
@@ -48,6 +53,10 @@ comoEsta cliente
   | otherwise = "duro"
 
 {- Objetivo 5 -}
+
+{---------------------------
+-----Bebidassssssssssss-----
+----------------------------}
 
 grogXD:: TipoCliente -> TipoCliente
 grogXD (Cliente nombre resistencia amigos) = (Cliente nombre 0 amigos)
