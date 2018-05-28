@@ -4,7 +4,8 @@ module Cliente
     rescatarse,
     es_amigo,
     agregar_amigo,
-    amigarse)
+    amigarse,
+    )
     where
 
 import Data.Char
@@ -62,16 +63,17 @@ jarraLoca (Cliente nombre resistencia amigos) =
 
 klusener :: String -> TipoCliente -> TipoCliente
 klusener nombreBebida (Cliente nombre resistencia amigos) = 
-                (Cliente nombre (disminuirResistencia (length nombreBebida) resistencia) amigos)
+                disminuirResistencia (length nombreBebida) (Cliente nombre resistencia amigos)
+                {-(Cliente nombre (disminuirResistencia (length nombreBebida) resistencia) amigos)-}
 
 tintico :: TipoCliente -> TipoCliente
 tintico (Cliente nombre resistencia amigos) = 
                 (Cliente nombre (resistencia + (5 * (length amigos))) amigos)
 
 soda :: Int -> TipoCliente -> TipoCliente
-soda Fuerza (Cliente nombre resistencia amigos) = 
+soda fuerza (Cliente nombre resistencia amigos) = 
                 (Cliente (erpear fuerza nombre) resistencia amigos)
-                where erpear fuerza nombre = "e" ++ (repeat fuerza 'r') ++ p ++ nombre
+                where erpear fuerza nombre = "e" ++ (replicate fuerza 'r') ++ "p" ++ nombre
 
 {- Objetivo 6 -}
 
