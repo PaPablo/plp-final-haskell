@@ -9,6 +9,8 @@ module Cliente
 
 import Data.Char
 
+{- Objetivo 1 -}
+
 data TipoCliente = 
     Cliente {
     nombre      :: String,
@@ -23,17 +25,6 @@ instance Eq TipoCliente where
         where lowercase cadena = [toLower c | c <- cadena]
     c1 /= c2 = not(c1 == c2)
 
-como_esta :: TipoCliente -> String
-como_esta cliente 
-  | resistencia cliente > 50 = "fresco"
-  | length (amigos cliente) >= 1 = "piola"
-  | otherwise = "duro"
-
-rescatarse :: TipoCliente -> Int -> TipoCliente
-rescatarse (Cliente nombre resistencia amigos) horas
-  | horas > 3 = Cliente nombre (resistencia+200) amigos
-  | otherwise = Cliente nombre (resistencia+100) amigos
-
 es_amigo :: TipoCliente -> TipoCliente -> Bool
 es_amigo cliente amigo = elem amigo (amigos cliente)
 
@@ -46,3 +37,16 @@ amigarse :: TipoCliente -> TipoCliente -> TipoCliente
 amigarse cliente amigo
   | cliente /= amigo && not(es_amigo cliente amigo) = agregar_amigo cliente amigo 
   | otherwise = cliente
+
+{- Objetivo 3 -}
+
+como_esta :: TipoCliente -> String
+como_esta cliente 
+  | resistencia cliente > 50 = "fresco"
+  | length (amigos cliente) >= 1 = "piola"
+  | otherwise = "duro"
+
+rescatarse :: TipoCliente -> Int -> TipoCliente
+rescatarse (Cliente nombre resistencia amigos) horas
+  | horas > 3 = Cliente nombre (resistencia+200) amigos
+  | otherwise = Cliente nombre (resistencia+100) amigos
