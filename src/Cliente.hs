@@ -186,3 +186,12 @@ intensidad (Itinerario nombre duracion acciones) =
 hacerElMasIntenso :: [TipoItinerario] -> TipoCliente -> TipoCliente
 hacerElMasIntenso listaItinerarios cliente =
     hacerItinerario (maximum listaItinerarios) cliente
+
+{- Jarra popular -}
+
+jarraPopular :: Int -> TipoCliente -> TipoCliente
+jarraPopular espirituosidad (Cliente nombre resistencia amigos bebidas_tomadas) = 
+            foldl amigarse (Cliente nombre resistencia amigos bebidas_tomadas) (amigosEnProfundidad espirituosidad (Cliente nombre resistencia amigos bebidas_tomadas))
+
+amigosEnProfundidad 0 (Cliente nombre resistencia amigos bebidas_tomadas) = []
+amigosEnProfundidad n (Cliente nombre resistencia amigos bebidas_tomadas) =  foldl (++) amigos (map (amigosEnProfundidad (n-1)) amigos)
