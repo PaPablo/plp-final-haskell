@@ -30,7 +30,15 @@ data TipoCliente =
     bebidas_tomadas :: [TipoBebida]}
 
 instance Show TipoCliente where
-    show (Cliente nombre resistencia amigos bebidas_tomadas) = show(nombre)
+    show cliente = 
+        nombre cliente
+        ++ " tomó "
+        ++ show(bebidas_tomadas cliente)
+        ++ ", tiene resistencia "
+        ++ show(resistencia cliente)
+        ++ ", y es amigo de "
+        ++ show(map nombre (amigos cliente))
+
     
 {-Un cliente se sabe comparar-}
 {-Dos cliente son iguales si sus nombres (en minúsculas) son iguales-}
