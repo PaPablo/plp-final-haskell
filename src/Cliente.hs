@@ -28,8 +28,10 @@ data TipoCliente =
     resistencia     :: Int,
     amigos          :: [TipoCliente],
     bebidas_tomadas :: [TipoBebida]}
-    deriving (Show)
 
+instance Show TipoCliente where
+    show (Cliente nombre resistencia amigos bebidas_tomadas) = show(nombre)
+    
 {-Un cliente se sabe comparar-}
 {-Dos cliente son iguales si sus nombres (en minúsculas) son iguales-}
 instance Eq TipoCliente where
