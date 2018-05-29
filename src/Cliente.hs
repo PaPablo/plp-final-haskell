@@ -76,9 +76,10 @@ comoEsta cliente
 data TipoBebida = 
         GrogXD 
       | JarraLoca
-      | Klusener    {sabor :: String}
+      | Klusener        {sabor :: String}
       | Tintico
-      | Soda        {fuerza :: Int}
+      | Soda            {fuerza :: Int}
+      | JarraPopular    {espirituosidad :: Int}
 
 instance Show TipoBebida where
     show GrogXD = "GrogXD"
@@ -86,6 +87,8 @@ instance Show TipoBebida where
     show (Klusener sabor) = ("Klusener de " ++ sabor)
     show Tintico = "Tintico"
     show (Soda fuerza) = ("Soda de fuerza " ++ show(fuerza))
+    show (JarraPopular espirituosidad) = 
+        ("Jarra popular de espirituosidad " ++ show(espirituosidad))
 
 {- Objetivo 6 -}
 
@@ -107,8 +110,20 @@ disminuirResistencia cantidad (Cliente nombre resistencia amigos bebidas_tomadas
   | resistencia > cantidad = (Cliente nombre (resistencia-cantidad) amigos bebidas_tomadas)
   | otherwise = (Cliente nombre 0 amigos bebidas_tomadas)
 
+amigosEnProfundidad :: Int -> TipoCliente -> [TipoCliente]
+amigosEnProfundidad 0 (Cliente nombre resistencia amigos bebidas_tomadas) = []
+amigosEnProfundidad n (Cliente nombre resistencia amigos bebidas_tomadas) = 
+    foldl (++) amigos (map (amigosEnProfundidad (n-1)) amigos)
+
 
 tomarTrago :: TipoBebida -> TipoCliente -> TipoCliente
+tomarTrago 
+    (JarraPopular espirituosidad) 
+    (Cliente nombre resistencia amigos bebidas_tomadas) = 
+        foldl amigarse 
+            (Cliente nombre resistencia amigos ((JarraPopular espirituosidad):bebidas_tomadas)) 
+            (amigosEnProfundidad espirituosidad 
+                (Cliente nombre resistencia amigos bebidas_tomadas))
 tomarTrago 
     GrogXD 
     (Cliente nombre resistencia amigos bebidas_tomadas) = 
@@ -174,6 +189,7 @@ instance Show TipoItinerario where
         ++ show(intensidad (Itinerario nombre duracion acciones)) 
         ++ ")"
 
+
 instance Eq TipoItinerario where
     it1 == it2 = intensidad it1 == intensidad it2
     it1 /= it2 = not(it1 == it2)
@@ -187,6 +203,7 @@ hacerItinerario (Itinerario _ _ []) cliente = cliente
 hacerItinerario (Itinerario nombre duracion (accion:acciones)) cliente =
     hacerItinerario (Itinerario nombre duracion acciones) (accion cliente)
     
+{- Objetivo 4 -}
 intensidad :: TipoItinerario -> Float
 intensidad (Itinerario nombre duracion acciones) =
     (fromIntegral (length acciones)) / duracion
@@ -194,12 +211,3 @@ intensidad (Itinerario nombre duracion acciones) =
 hacerElMasIntenso :: [TipoItinerario] -> TipoCliente -> TipoCliente
 hacerElMasIntenso listaItinerarios cliente =
     hacerItinerario (maximum listaItinerarios) cliente
-
-{- Jarra popular -}
-
-jarraPopular :: Int -> TipoCliente -> TipoCliente
-jarraPopular espirituosidad (Cliente nombre resistencia amigos bebidas_tomadas) = 
-            foldl amigarse (Cliente nombre resistencia amigos bebidas_tomadas) (amigosEnProfundidad espirituosidad (Cliente nombre resistencia amigos bebidas_tomadas))
-
-amigosEnProfundidad 0 (Cliente nombre resistencia amigos bebidas_tomadas) = []
-amigosEnProfundidad n (Cliente nombre resistencia amigos bebidas_tomadas) =  foldl (++) amigos (map (amigosEnProfundidad (n-1)) amigos)
