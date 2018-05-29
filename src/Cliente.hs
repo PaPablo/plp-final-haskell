@@ -51,7 +51,7 @@ agregarAmigo (Cliente nombre resistencia amigos bebidas_tomadas) nuevo_amigo =
 --agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (amigos++[nuevo_amigo])
 
 amigarse :: TipoCliente -> TipoCliente -> TipoCliente
-amigarse amigo cliente
+amigarse cliente amigo
   | cliente /= amigo && not(esAmigo cliente amigo) = agregarAmigo cliente amigo 
   | otherwise = cliente
 
