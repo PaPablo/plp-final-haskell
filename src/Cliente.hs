@@ -1,6 +1,7 @@
 module Cliente 
     (TipoCliente (..),
     TipoBebida (..),
+    TipoItinerario (..),
     comoEsta,
     rescatarse,
     esAmigo,
@@ -11,6 +12,9 @@ module Cliente
     dameOtro,
     cualesPuedeTomar,
     cuantasPuedeTomar,
+    hacerItinerario,
+    intensidad,
+    hacerElMasIntenso,
     )
     where
 
@@ -39,12 +43,13 @@ esAmigo :: TipoCliente -> TipoCliente -> Bool
 esAmigo cliente amigo = elem amigo (amigos cliente)
 
 agregarAmigo :: TipoCliente -> TipoCliente -> TipoCliente
-agregarAmigo (Cliente nombre resistencia amigos bebidas_tomadas) nuevo_amigo = Cliente nombre resistencia (nuevo_amigo:amigos) bebidas_tomadas
+agregarAmigo (Cliente nombre resistencia amigos bebidas_tomadas) nuevo_amigo = 
+    Cliente nombre resistencia (nuevo_amigo:amigos) bebidas_tomadas
 --Otra forma de agregar el amigo es concatenando listas (hacer una lista con el nuevo_amigo)
 --agregarAmigo (Cliente nombre resistencia amigos) nuevo_amigo = Cliente nombre resistencia (amigos++[nuevo_amigo])
 
 amigarse :: TipoCliente -> TipoCliente -> TipoCliente
-amigarse cliente amigo
+amigarse amigo cliente
   | cliente /= amigo && not(esAmigo cliente amigo) = agregarAmigo cliente amigo 
   | otherwise = cliente
 
@@ -72,11 +77,10 @@ instance Show TipoBebida where
     show Tintico = "Tintico"
     show (Soda fuerza) = ("Soda de fuerza " ++ show(fuerza))
 
-
 {- Objetivo 6 -}
 
-rescatarse :: TipoCliente -> Int -> TipoCliente
-rescatarse (Cliente nombre resistencia amigos bebidas_tomadas) horas
+rescatarse :: Int -> TipoCliente -> TipoCliente
+rescatarse horas (Cliente nombre resistencia amigos bebidas_tomadas) 
   | horas > 3 = Cliente nombre (resistencia+200) amigos bebidas_tomadas
   | otherwise = Cliente nombre (resistencia+100) amigos bebidas_tomadas
 
@@ -141,3 +145,42 @@ cualesPuedeTomar cliente listaTragos =
 cuantasPuedeTomar :: TipoCliente -> [TipoBebida] -> Int
 cuantasPuedeTomar cliente listaTragos = 
     length (cualesPuedeTomar cliente listaTragos)
+
+{- Objetivo 3 -}
+
+data TipoItinerario = 
+    Itinerario {
+    nombreItinerario    :: String,
+    duracion            :: Float,
+    acciones            :: [(TipoCliente -> TipoCliente)]}
+
+instance Show TipoItinerario where
+    show (Itinerario nombre duracion acciones) = 
+        nombre
+        ++ ": " 
+        ++ "itinerario de duracion " 
+        ++ show(duracion) 
+        ++ " horas (intensidad " 
+        ++ show(intensidad (Itinerario nombre duracion acciones)) 
+        ++ ")"
+
+instance Eq TipoItinerario where
+    it1 == it2 = intensidad it1 == intensidad it2
+    it1 /= it2 = not(it1 == it2)
+
+instance Ord TipoItinerario where
+    it1 <= it2 = intensidad it1 <= intensidad it2
+
+
+hacerItinerario :: TipoItinerario -> TipoCliente -> TipoCliente
+hacerItinerario (Itinerario _ _ []) cliente = cliente
+hacerItinerario (Itinerario nombre duracion (accion:acciones)) cliente =
+    hacerItinerario (Itinerario nombre duracion acciones) (accion cliente)
+    
+intensidad :: TipoItinerario -> Float
+intensidad (Itinerario nombre duracion acciones) =
+    (fromIntegral (length acciones)) / duracion
+
+hacerElMasIntenso :: [TipoItinerario] -> TipoCliente -> TipoCliente
+hacerElMasIntenso listaItinerarios cliente =
+    hacerItinerario (maximum listaItinerarios) cliente
