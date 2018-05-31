@@ -1,24 +1,25 @@
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{ltgray}{rgb}{0.5,0.5,0.5}
-\definecolor{alizarin}{rgb}{0.82, 0.1, 0.26}
+\definecolor{comment-green}{rgb}{0,0.5,0}
+\definecolor{bg-light-gray}{HTML}{E9E9E9}
+\definecolor{telegram-blue}{HTML}{148AC5}
+\definecolor{keyword-alizarin}{rgb}{0.82, 0.1, 0.26}
 
 \lstdefinestyle{haskell}{
     language=haskell,
-  	keywordstyle=\bfseries\color{alizarin}\ttfamily,
-    stringstyle=\ttfamily\color{blue},
-    commentstyle=\color{mygreen}\itshape,
-    numberstyle=\color{mygray}\ttfamily,
-    identifierstyle=\color{black},
+    backgroundcolor=\color{bg-light-gray},
+  	keywordstyle=\bfseries\color{keyword-alizarin}\ttfamily,
+    stringstyle=\color{telegram-blue}\ttfamily,
+    commentstyle=\color{comment-green}\itshape\ttfamily,
+    numberstyle=\color{gray}\ttfamily,
+    identifierstyle=\color{black}\ttfamily,
+    rulecolor=\color{gray},
     showstringspaces=false,
-    escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+    escapeinside={\%*}{*)},
   	morekeywords={TipoCliente,TipoBebida},
     breaklines=true,
   	title=\lstname,	
-    frame=L, 
+    frame=trbl, 
+    framexleftmargin=20pt,
     numbers=left,
   	xleftmargin=\parindent,
-  	rulecolor=\color{mygray},
+    frameround=tttt,
 }

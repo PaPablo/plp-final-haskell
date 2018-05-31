@@ -25,6 +25,26 @@
 %Your abstract.
 %\end{abstract}
 
+\section{Modelado del dominio}
+
+\subsection{Cliente}
+\subsection{Bebida}
+\subsection{Itinerario}
+
+
+\lstset{style=haskell}
+\begin{lstlisting}
+{- Objetivo 1 -}
+
+f x = "la concha de tu madre all boys"
+data TipoCliente = 
+    Cliente {
+    nombre          :: String,
+    resistencia     :: Int,
+    amigos          :: [TipoCliente],
+    bebidas_tomadas :: [TipoBebida]}
+\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
