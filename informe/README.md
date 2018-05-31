@@ -4,6 +4,11 @@
 - `texlive`
 - `biber` (para compilar la bibliografía de `BiBLaTeX`)
 
+## Compilación
+
+- Compilar el *.pdf* haciendo `make`
+- Borrar el *.pdf* con `make realclean`
+
 ### Estructura de archivos
 
 - `informe.tex`: archivo principal; incluye los archivos de configuración necesarios.
