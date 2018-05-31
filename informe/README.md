@@ -2,7 +2,7 @@
 
 - `make`
 - `texlive`
-- `biber` (para compilar la bibliografía de `BiBLaTeX`)
+- `biber` (para compilar la bibliografía de `BiBLaTeX`, instalable via `pacman -S biber`)
 
 ## Compilación
 
