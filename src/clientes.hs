@@ -177,7 +177,7 @@ parte2Objetivo3be =
 {-Objetivo 4a-}
 
 parte2Objetivo4aa = 
-    "la intensidad de la mezcla explosiva es 1.6" 
+    "la intensidad de la mezcla explosiva es 1.2" 
     ++ show(intensidad mezclaExplosiva)
 
 parte2Objetivo4ab = 
