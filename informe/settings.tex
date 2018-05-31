@@ -31,47 +31,21 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 \documentclass[14pt]{extarticle}
-%Paquetes para idioma español y codifcación UTF8
-\usepackage[spanish]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{csquotes}
 
-%%% BIBLATEX
-\usepackage{biblatex}
-%%% BIBLIOGRAPHY
-\addbibresource{references.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% En 'includes.tex' están todos los "\usepackage"
+% (los "imports" de paquetes)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%paquete de matemática, vuela
-\usepackage{amsmath}
-%fuente 'fourier'
-\usepackage{fourier}
-%paquete para URLs
-\usepackage{url}
-%paquete para ubicar las imágenes
-\usepackage{float}
-%paquete para imágenes y en dónde las tiene que buscar
-\usepackage{graphicx}
-\graphicspath{{images/}}
-%paquete para epígrafes
-\usepackage{subcaption}
-%paquete para definir los márgenes de la hoja
-\usepackage[left=1.5cm,right=1.5cm,top=3cm,bottom=3cm]{geometry}
-%paquete para poner todos y comentarios
-\usepackage[colorinlistoftodos]{todonotes}
-%paquete para trabajar con código
-\usepackage{listings}
-%paquete para trabajar con colores y definir propios
-\usepackage{color}
+\input{includes}
 
-%Cabeceras
-\usepackage{fancyhdr}
 \pagestyle{fancy}
-\fancyhead[L]{Bases de Datos II, 2018}
+\fancyhead[L]{Paradigmas de Lenguajes y Programación, 2018}
 \fancyhead[C]{}
 \fancyhead[R]{UNPSJB}
 
-\fancyfoot[R]{Luciano Serruya Aloisi}
-\fancyfoot[L]{Trabajo Práctico 3}
+\fancyfoot[L]{SERRUYA ALOISI, TOLEDO MARGALEF}
+\fancyfoot[R]{Laboratorio HASKELL}
 
 %%paquete para reducir espacio entre secciones
 %\usepackage{titlesec}
