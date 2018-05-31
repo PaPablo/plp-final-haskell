@@ -15,11 +15,18 @@
     showstringspaces=false,
     escapeinside={\%*}{*)},
   	morekeywords={TipoCliente,TipoBebida},
+    otherkeywords={::,=,==,not,++},
     breaklines=true,
   	title=\lstname,	
     frame=trbl, 
-    framexleftmargin=20pt,
+    framexleftmargin=25pt,
     numbers=left,
-  	xleftmargin=\parindent,
+    xleftmargin=\parindent,
     frameround=tttt,
+    % re tirado de los pelos, pero es lo que hay
+    % sacado de:
+    % https://tex.stackexchange.com/questions/24528/having-problems-with-listings-and-utf-8-can-it-be-fixed
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1,
 }

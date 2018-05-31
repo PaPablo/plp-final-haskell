@@ -1,5 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % En 'setting.tex' se encuentran las configuraciones del proyecto
+% En 'listings_settings.tex' se encuentran las configuraciones
+% propias de listings, que es el paquete usado para incrustar código
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{settings}
 \input{listings_settings}
@@ -25,18 +27,27 @@
 %Your abstract.
 %\end{abstract}
 
+\lstset{style=haskell}
+
 \section{Modelado del dominio}
 
+El dominio de la aplicación consta de \textbf{clientes} de un boliche, las distintas \textbf{bebidas} que vende el bolice, e \textbf{itinerarios} posibles para realizar.   
+
+Para implementarlos, se definieron como \emph{tipos de datos} distintos. Aprovechando también las \emph{Typeclasses} de Haskell, cada uno de ellos sabe mostrarse por pantalla (definiéndolos como \emph{instancias} de la clase \emph{Show}). 
+
 \subsection{Cliente}
-\subsection{Bebida}
-\subsection{Itinerario}
 
+Un cliente se compone de:
+\begin{itemize}
+    \item un nombre;
+    \item una resistencia;
+    \item una lista de amigos (que son otros clientes);
+    \item una lista de las bebidas tomadas.
+\end{itemize}
 
-\lstset{style=haskell}
+A continuación se muestra la implementación correspondiente en Haskell
+
 \begin{lstlisting}
-{- Objetivo 1 -}
-
-f x = "la concha de tu madre all boys"
 data TipoCliente = 
     Cliente {
     nombre          :: String,
@@ -44,6 +55,124 @@ data TipoCliente =
     amigos          :: [TipoCliente],
     bebidas_tomadas :: [TipoBebida]}
 \end{lstlisting}
+
+La representación por pantalla de un cliente muestra su nombre, qué bebidas tomó, su resistencia, y los nombres de sus amigos
+\clearpage
+\begin{lstlisting}
+instance Show TipoCliente where
+    show cliente = 
+        nombre cliente
+        ++ " tomó "
+        ++ show(bebidas_tomadas cliente)
+        ++ ", tiene resistencia "
+        ++ show(resistencia cliente)
+        ++ ", y es amigo de "
+        ++ show(map nombre (amigos cliente))
+\end{lstlisting}
+
+Los clientes también saben compararse por igualdad, siendo iguales dos clientes que tengan el mismo nombre, obviando cualquier mayúsculas (\emph{Case Insensitive})
+
+\begin{lstlisting}
+instance Eq TipoCliente where
+    c1 == c2 = lowercase (nombre c1) == lowercase (nombre c2)
+        where lowercase cadena = [toLower c | c <- cadena]
+    c1 /= c2 = not(c1 == c2)
+\end{lstlisting}
+
+Se definieron las siguientes funciones para trabajar con un cliente:
+\begin{itemize}
+    \item \textbf{amigarse}: recibe dos clientes, y devuelve un nuevo cliente (en base al primero) con el segundo agregado a su lista de amigos (teniendo como restricción que un cliente no se puede amigar consigo mismo ni con un cliente que ya era amigo)
+    \item \textbf{comoEsta}: indica cómo está un cliente en base a su resistencia y su cantidad de amigos 
+    \item \textbf{rescatarse}: recibe un cliente y una cantidad de horas, devuelve un cliente con resistencia incrementada según la cantidad de horas indicadas 
+
+\end{itemize}
+\subsection{Bebida}
+
+El boliche maneja distintos tipos de bebidas, algunas con algún parámetro variable (como un nombre, una fuerza, o una espirituosidad).
+
+En la implementación, un \emph{TipoBebida} puede ser alguna de las distintas opciones  
+\clearpage
+\begin{lstlisting}
+{-  
+    Un TipoBebida va a ser un GrogXD 
+    ó una JarraLoca 
+    ó un tipo de Klusener 
+    ...
+-}
+data TipoBebida = 
+        GrogXD 
+      | JarraLoca
+      | Klusener        {sabor :: String}
+      | Tintico
+      | Soda            {fuerza :: Int}
+      | JarraPopular    {espirituosidad :: Int}
+\end{lstlisting}
+
+La representación por pantalla también varía según el tipo de bebida que sea
+\begin{lstlisting}
+instance Show TipoBebida where
+    show GrogXD = "GrogXD"
+    show JarraLoca = "Jarra Loca"
+    show (Klusener sabor) = 
+        ("Klusener de " ++ sabor)
+    show Tintico = "Tintico"
+    show (Soda fuerza) = 
+        ("Soda de fuerza " ++ show(fuerza))
+    show (JarraPopular espirituosidad) = 
+        ("Jarra popular de espirituosidad " 
+        ++ show(espirituosidad))
+\end{lstlisting}
+
+Ahora bien, cada bebida tiene su efecto en el cliente que la toma; para modelar este comportamiento, se implementó la función \emph{tomarTrago}, que recibe un cliente y una bebida, y devuelve el cliente después de tomar la bebida. La función está definida para cada tipo de bebida.
+
+Debido a la extensión de las definiciones, no se mostrarán en este informe.
+
+~\\
+
+Es posible saber cuáles, de una lista de bebidas, puede tomar un cliente (un cliente no puede tomar una bebida que lo deja con resistencia menor o igual a 0). Para ello se implentó la función \emph{cualesPuedeTomar}, que recibe una lista de bebidas y un cliente, y devuelve una lista de las posibles bebidas.
+
+Para saber cuántas son, la función \emph{cuantasPuedeTomar} recibe los mismos parámetros que la función anterior y devuelve la cantidad de las bebidas que puede tomar. 
+
+\subsection{Itinerario}
+
+Por último, los itinerarios incluyen 
+\begin{itemize}
+    \item un nombre;
+    \item una duración;
+    \item una lista de acciones
+\end{itemize}
+
+\begin{lstlisting}
+{-
+    Las acciones del itinerario son funciones
+    que reciben un cliente,
+    y devuelven un cliente
+-}
+data TipoItinerario = 
+    Itinerario {
+    nombreItinerario    :: String,
+    duracion            :: Float,
+    acciones            :: [(TipoCliente -> TipoCliente)]}
+\end{lstlisting}
+
+Cada itinerario tiene una intensidad determinada por su cantidad de acciones por hora.
+
+Uno de los requerimientos de la aplicación era poder conocer cuál era el itinerario más intenso de una lista de itinerarios. Para esta funcionalidad, los itinerarios deben saber compararse. Un itinerario será menor que otro si su intensidad es menor.
+
+\clearpage
+\begin{lstlisting}
+{-
+Haskell necesita que antes que sean ordenables, sean igualables
+-}
+instance Eq TipoItinerario where
+    it1 == it2 = intensidad it1 == intensidad it2
+    it1 /= it2 = not(it1 == it2)
+
+instance Ord TipoItinerario where
+    it1 <= it2 = intensidad it1 <= intensidad it2
+\end{lstlisting}
+
+Para que un cliente realice un itinerario, la función \emph{hacerItinerario} recibe un itinerario y un cliente, y devuelve el cliente después de haber completado todo el itinerario. Si se quiere que un cliente realice el itinerario más intenso en base a una lista de itinerarios, la función \emph{hacerElMasIntenso} recibe la lista y el cliente, y devuelve el cliente después de haber terminado el más intenso.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
