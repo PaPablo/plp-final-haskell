@@ -68,7 +68,7 @@ amigarse cliente amigo
 comoEsta :: TipoCliente -> String
 comoEsta cliente 
   | resistencia cliente > 50 = "fresco"
-  | length (amigos cliente) >= 1 = "piola"
+  | length (amigos cliente) > 1 = "piola"
   | otherwise = "duro"
 
 {- Objetivo 5 -}
